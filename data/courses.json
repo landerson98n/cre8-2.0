@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "title": "Turmas Regulares",
+        "icon": "https://ik.imagekit.io/6zjortsiwu/tr:w-300/regular.png",
+        "features": [
+            "Até 5 alunos por turma",
+            "2 aulas por semana",
+            "Turmas dos níveis Iniciante ao Avançado",
+            "Material de Cambridge, moderno e atualizado"
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Aulas VIP",
+        "icon": "https://ik.imagekit.io/6zjortsiwu/tr:w-300/vip.png",
+        "features": [
+            "Prefere aulas exclusivas",
+            "Possui uma necessidades particular com inglês",
+            "Precisa de um estudo intensivo da língua"
+        ]
+    },
+    {
+        "id": 3,
+        "title": "Preparatório IELTS/TOEFL",
+        "icon": "https://ik.imagekit.io/6zjortsiwu/tr:w-300/preparatorio.png",
+        "features": [
+            "Imigrar para outro país",
+            "Bolsas de estudo",
+            "Vagas de trabalho no exterior",
+            "IELTS, Toefl, Cambridge, Toeic"
+        ]
+    }
+]

@@ -2,43 +2,63 @@
 import { Instagram, Phone, Linkedin } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
-import { useState, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Lottie from 'react-lottie-player'
-import { useMediaQuery } from 'react-responsive'
-
-// Import your Lottie animation data here
-import trophyAnimation from '@/animations/quality.json'
-import lightbulbAnimation from '@/animations/idea.json'
-import bookAnimation from '@/animations/cap.json'
 import successAnimation from '@/animations/email.json'
 import heroAnimation from '@/animations/mundo.json'
-import worldAnimation from '@/animations/world.json'
-import brasilAnimation from '@/animations/brasil.json'
-
-const benefits = [
-  { title: 'Qualidade', description: 'Ensino de qualidade com nossa equipe de professores certificados internacionalmente.', animationData: trophyAnimation },
-  { title: 'Soluções', description: 'Aulas individuais ou em turmas, inglês para negócios, e o que mais você precisar!', animationData: lightbulbAnimation },
-  { title: '+ 275 alunos', description: 'Mais de 275 alunos fazem parte da nossa história.', animationData: bookAnimation },
-  { title: 'Mundo', description: 'Alunos em 8 países.', animationData: worldAnimation },
-  { title: 'Brasil	', description: 'A Cre8 já está em 18 estados do Brasil!', animationData: brasilAnimation },
-]
-
-const courses = [
-  { title: 'Turmas Regulares', icon: 'https://ik.imagekit.io/6zjortsiwu/tr:w-300/regular.png', features: ['Até 5 alunos por turma', '2 aulas por semana', 'Turmas dos níveis Iniciante ao Avançado', 'Material de Cambridge, moderno e atualizado'] },
-  { title: 'Aulas VIP', icon: 'https://ik.imagekit.io/6zjortsiwu/tr:w-300/vip.png', features: ['Prefere aulas exclusivas', 'Possui uma necessidades particular com inglês', 'Precisa de um estudo intensivo da língua'] },
-  { title: 'Preparatório IELTS/TOEFL', icon: 'https://ik.imagekit.io/6zjortsiwu/tr:w-300/preparatorio.png', features: ['Imigrar para outro país', 'Bolsas de estudo', 'Vagas de trabalho no exterior', 'IELTS, Toefl, Cambridge, Toeic'] },
-]
 
 
 export default function LandingPage() {
-  const isMobile = useMediaQuery({ query: '(max-width: 425px)' })
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [benefits, setBenefits] = useState([])
+  const [animationsData, setAnimationsData] = useState({});
+  const [depoiments, setDepoiments] = useState([])
+  const [courses, setCourses] = useState([])
+  const [hero, setHero] = useState({title: "", subtitle: ""})
+
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const { scrollYProgress } = useScroll()
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
+
+  useEffect(() => {
+    fetch('/api/benefits')
+      .then((res) => res.json())
+      .then((data) => setBenefits(data));
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/depoiments')
+      .then((res) => res.json())
+      .then((data) => setDepoiments(data));
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/courses')
+      .then((res) => res.json())
+      .then((data) => setCourses(data));
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/hero')
+      .then((res) => res.json())
+      .then((data) => setHero(data[0]));
+  }, []);
+
+  useEffect(() => {
+    benefits.forEach((benefit) => {
+      fetch(benefit.animationData)
+        .then((res) => res.json())
+        .then((data) => {
+          setAnimationsData((prevState) => ({
+            ...prevState,
+            [benefit.title]: data, // Armazena a animação JSON com a chave sendo o título do benefício
+          }));
+        })
+        .catch((error) => console.error('Erro ao carregar a animação:', error));
+    });
+  }, [benefits]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,56 +70,7 @@ export default function LandingPage() {
     setIsMenuOpen(!isMenuOpen)
   }
 
-  const depoiments = [
-    {
-      name: "Lílian Carvalho ",
-      sub: 'Talent Management Specialist',
-      sub1: "AB InBev",
-      city: "Campinas - SP",
-      text: 'Sempre me comuniquei bem em Inglês, mas senti a necessidade de focar em Inglês corporativo com uma linguagem mais formal. Encontro na Cre8 o fit perfeito para isso, já que a instituição se preocupa em entregar aulas coerentes com suas necessidades!',
-      image: isMobile ? 'https://ik.imagekit.io/6zjortsiwu/tr:w-200/lilian.webp' : 'https://ik.imagekit.io/6zjortsiwu/lilian.webp',
-    },
-    {
-      name: "Gabriela Xavier",
-      sub: 'Innovation Coordinator ',
-      sub1: "Hospital Albert Einstein",
-      city: "São Paulo - SP",
-      text: 'A Cre8 foi uma indicação maravilhosa de uma grande amiga e desde então recomendo sempre a escola e o Teacher Saulo para amigos. As aulas são bem organizadas, visuais e com um conteúdo super atual, tornando o aprendizado da língua aliado a temas relevantes e profundos! ',
-      image: isMobile ? 'https://ik.imagekit.io/6zjortsiwu/tr:w-200/gabriela.webp' : 'https://ik.imagekit.io/6zjortsiwu/gabriela.webp',
-    },
-    {
-      name: "Ana Jéssica",
-      sub: 'Gestora de Compras',
-      sub1: "Grupo Vanguarda",
-      city: "Teresina - PI",
-      text: 'Já tive experiências em outras escolas, e apesar do contato com inglês, nunca senti segurança ao falar. Estou há quase um ano e meio na Cre8 por me sentir à vontade para conversar, errar e aprender com aulas que trazem tópicos e situações em que podemos praticar o inglês na vida real!',
-      image: isMobile ? 'https://ik.imagekit.io/6zjortsiwu/tr:w-200/ana.webp' : 'https://ik.imagekit.io/6zjortsiwu/ana.webp',
-    },
-    {
-      name: "Laise Paula",
-      sub: 'Assessora de Comunicação',
-      sub1: " ",
-      city: "Caxias - MA",
-      text: 'Estudo na Cre8 desde o comecinho. Posso falar com certeza que foi essencial para meu grande desenvolvimento! Hoje me sinto muito mais segura ao falar e escrever em inglês. Além disso, os professores são excelentes profissionais e as aulas dinâmicas e interessantes. Amo estudar na Cre8 e indico sempre!',
-      image: isMobile ? 'https://ik.imagekit.io/6zjortsiwu/tr:w-200/laise.webp' : 'https://ik.imagekit.io/6zjortsiwu/laise.webp',
-    },
-    {
-      name: "Daniela Corrêa ",
-      sub: 'Procurement Strategy',
-      sub1: "Yara Internationa",
-      city: "Oslo - Noruega",
-      text: 'Apesar de ter estudado inglês desde criança, me sentia muito insegura com relação a conversação e gramática. As aulas individuais me fizeram ter confiança para assumir um dos maiores desafios da minha carreira: me mudar para a Noruega! Amei o método da Cre8, com aulas dinâmicas e muita conversação!',
-      image: isMobile ? 'https://ik.imagekit.io/6zjortsiwu/tr:w-200/daniela.webp' : 'https://ik.imagekit.io/6zjortsiwu/daniela.webp',
-    },
-    {
-      name: "Kleber Ferbones",
-      sub: 'Especialista em Projeto e Desenvolvimento',
-      sub1: "Ambev",
-      city: "São José dos Campos - SP",
-      text: 'Tenho feito aulas desde o início de 2022, e tem sido uma ótima opção para mim que busco um aprendizado personalizado, focando nos pontos que preciso melhorar. Outra vantagem é a flexibilidade de horários, que me ajudam demais! Obrigado pela paciência e ensinamentos rs',
-      image: isMobile ? 'https://ik.imagekit.io/6zjortsiwu/tr:w-300/Kleber.webp' : 'https://ik.imagekit.io/6zjortsiwu/Kleber.webp',
-    }
-  ]
+
 
   return (
     <div className="min-h-screen bg-blue-600 text-white font-sans" style={{ fontFamily: "var(--Baloo-Regular)" }}>
@@ -152,7 +123,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Conquiste o mundo com<br />fluência em inglês!
+             {hero.title}
             </motion.h1>
             <motion.p
               className="text-lg md:text-xl mb-12 max-w-2xl mx-auto"
@@ -160,7 +131,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              Aprenda inglês com quem sabe e desbloqueie um mundo de oportunidades
+             {hero.subtitle}
             </motion.p>
             <motion.button
               className="bg-red-500 text-white font-bold py-3 px-8 rounded-full text-xl hover:bg-red-600 transition duration-300"
@@ -196,12 +167,16 @@ export default function LandingPage() {
                   viewport={{ once: true, amount: 0.3 }}
                 >
                   <div className="mb-4 h-24">
-                    <Lottie
-                      loop
-                      animationData={benefit.animationData}
-                      play
-                      style={{ width: 100, height: 100, margin: 'auto' }}
-                    />
+                    {animationsData[benefit.title] ? (
+                      <Lottie
+                        loop
+                        animationData={animationsData[benefit.title]}
+                        play
+                        style={{ width: 100, height: 100, margin: 'auto' }}
+                      />
+                    ) : (
+                      <p>Carregando animação...</p>
+                    )}
                   </div>
                   <h3 className="text-xl font-bold mb-2" style={{ fontFamily: "var(--Baloo-Bold)" }}>{benefit.title}</h3>
                   <p>{benefit.description}</p>
@@ -267,7 +242,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.5, delay: index * 0.2 }}
                   viewport={{ once: true, amount: 0.3 }}
                 >
-                  <img src={course.icon} className="h-32"/>
+                  <img src={course.icon} className="h-32" />
                   <h3 className="text-xl font-bold mb-4 text-white" style={{ fontFamily: "var(--Baloo-Bold)" }}>{course.title}</h3>
                   <ul className="list-disc list-inside">
                     {course.features.map((feature, i) => (
@@ -328,8 +303,6 @@ export default function LandingPage() {
           </AnimatePresence>
         </section>
       </main>
-
-     
     </div>
   )
 }
