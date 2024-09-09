@@ -23,7 +23,7 @@ export default function handler(req, res) {
 
     } else if (req.method === 'PUT') {
 
-        const id = JSON.parse(req.body);
+        const id = JSON.parse(req.body.id);
         const data = readData();
         const index = data.findIndex((prof) => prof.id === id);
 

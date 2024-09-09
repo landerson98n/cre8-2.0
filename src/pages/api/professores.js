@@ -22,17 +22,20 @@ export default function handler(req, res) {
         res.status(201).json({ message: 'Professor adicionado com sucesso!' });
 
     } else if (req.method === 'PUT') {
+        if (req.method === 'PUT') {
+            const { id, ...rest } = req.body; // Extrai o id e o resto dos campos
+            const data = readData();
+            const index = data.findIndex((prof) => prof.id === id);
 
-        const id = JSON.parse(req.body);
-        const data = readData();
-        const index = data.findIndex((prof) => prof.id === id);
-
-        if (index === -1) {
-            res.status(404).json({ message: 'Professor não encontrado!' });
+            if (index === -1) {
+                res.status(404).json({ message: 'Professor não encontrado!' });
+            } else {
+                data[index] = { ...data[index], ...rest }; // Atualiza apenas os campos que vieram no body
+                writeData(data);
+                res.status(200).json({ message: 'Professor atualizado com sucesso!' });
+            }
         } else {
-            data[index] = { ...data[index], ...req.body };
-            writeData(data);
-            res.status(200).json({ message: 'Professor atualizado com sucesso!' });
+            res.status(405).json({ message: 'Método não permitido' });
         }
 
     } else if (req.method === 'DELETE') {

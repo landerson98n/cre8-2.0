@@ -216,22 +216,38 @@ export default function AdminDashboard() {
     }
 
     const saveTeacher = async (teacher: Teacher): Promise<Teacher> => {
-        teacher.id = uuidv4()
-        const response = await fetch('/api/professores', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(teacher),
-        });
+        let response
 
-        if (!response.ok) {
-            throw new Error('Erro ao salvar professor');
+        if (teacher.id) {
+            response = await fetch('/api/professores/', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(teacher),
+            });
+            console.log(response);
+            
+            if (!response.ok) {
+                throw new Error('Erro ao atualizar professor');
+            }
+        } else {
+            teacher.id = uuidv4()
+            response = await fetch('/api/professores', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(teacher),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao salvar professor');
+            }
         }
 
         setRefresh(!refresh)
-
-        return await response.json(); // Retorna o professor salvo
+        return await response.json()
     }
 
     const deleteTeacher = async (id: string): Promise<void> => {
@@ -247,18 +263,34 @@ export default function AdminDashboard() {
     }
 
     const saveBenefit = async (benefit: Benefit): Promise<Benefit> => {
-        benefit.id = uuidv4()
-        const response = await fetch('/api/benefits', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(benefit),
-        });
+        let response
+        if (benefit.id) {
+            response = await fetch('/api/benefits', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(benefit),
+            });
 
-        if (!response.ok) {
-            throw new Error('Erro ao salvar benefício');
+            if (!response.ok) {
+                throw new Error('Erro ao salvar benefício');
+            }
+        } else {
+            benefit.id = uuidv4()
+            response = await fetch('/api/benefits', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(benefit),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao salvar benefício');
+            }
         }
+
         setRefresh(!refresh)
 
         return await response.json(); // Retorna o benefício salvo
@@ -277,18 +309,34 @@ export default function AdminDashboard() {
     }
 
     const saveCourse = async (course: Course): Promise<Course> => {
-        course.id = uuidv4()
-        const response = await fetch('/api/courses', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(course),
-        });
+        let response
+        if (course.id) {
+            response = await fetch('/api/courses', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(course),
+            });
 
-        if (!response.ok) {
-            throw new Error('Erro ao salvar curso');
+            if (!response.ok) {
+                throw new Error('Erro ao salvar curso');
+            }
+        } else {
+            course.id = uuidv4()
+            response = await fetch('/api/courses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(course),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao salvar curso');
+            }
         }
+
 
         setRefresh(!refresh)
 
