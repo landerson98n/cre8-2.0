@@ -23,7 +23,7 @@ export default function handler(req, res) {
 
     } else if (req.method === 'PUT') {
         if (req.method === 'PUT') {
-            const { id, ...rest } = req.body; // Extrai o id e o resto dos campos
+            const { id, ...rest } = req.body // Extrai o id e o resto dos campos
             const data = readData();
             const index = data.findIndex((data) => data.id === id);
 
