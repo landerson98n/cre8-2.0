@@ -1,0 +1,13 @@
+{
+    "build": {
+        "env": {
+            "DATABASE_URL": "file:./dev.db"
+        }
+    },
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/api"
+        }
+    ]
+}
