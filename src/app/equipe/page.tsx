@@ -56,7 +56,7 @@ export default function TeamPage() {
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ duration: 0.3, delay: i * 0.1 }}
                                         >
-                                            {qual}
+                                            {qual.text}
                                         </motion.li>
                                     ))}
                                 </ul>

@@ -211,8 +211,7 @@ export default function AdminDashboard() {
         const benefits = await fetch('/api/benefits').then((res) => res.json()).then((data) => { return data });
         const depoiments = await fetch('/api/depoiments').then((res) => res.json()).then((data) => { return data });
         const courses = await fetch('/api/courses').then((res) => res.json()).then((data) => { return data });
-        const { title, role } = await fetch('/api/hero').then((res) => res.json()).then((data) => { return data[0] });
-        return { heroTitle: title, heroSubtitle: role, benefits, courses, testimonials: depoiments }
+        return { heroTitle: '', heroSubtitle: '', benefits, courses, testimonials: depoiments }
     }
 
     const saveTeacher = async (teacher: Teacher): Promise<Teacher> => {
@@ -227,12 +226,11 @@ export default function AdminDashboard() {
                 body: JSON.stringify(teacher),
             });
             console.log(response);
-            
+
             if (!response.ok) {
                 throw new Error('Erro ao atualizar professor');
             }
         } else {
-            teacher.id = uuidv4()
             response = await fetch('/api/professores', {
                 method: 'POST',
                 headers: {
@@ -264,6 +262,7 @@ export default function AdminDashboard() {
 
     const saveBenefit = async (benefit: Benefit): Promise<Benefit> => {
         let response
+
         if (benefit.id) {
             response = await fetch('/api/benefits', {
                 method: 'PUT',
@@ -274,10 +273,9 @@ export default function AdminDashboard() {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao salvar benefício');
+                throw new Error('Erro ao atualizar benefício');
             }
         } else {
-            benefit.id = uuidv4()
             response = await fetch('/api/benefits', {
                 method: 'POST',
                 headers: {
@@ -297,6 +295,7 @@ export default function AdminDashboard() {
     }
 
     const deleteBenefit = async (id: string): Promise<void> => {
+
         const response = await fetch(`/api/benefits`, {
             method: 'DELETE',
             body: JSON.stringify(id),
@@ -305,6 +304,7 @@ export default function AdminDashboard() {
         if (!response.ok) {
             throw new Error('Erro ao deletar benefício');
         }
+
         setRefresh(!refresh)
     }
 
@@ -323,7 +323,6 @@ export default function AdminDashboard() {
                 throw new Error('Erro ao salvar curso');
             }
         } else {
-            course.id = uuidv4()
             response = await fetch('/api/courses', {
                 method: 'POST',
                 headers: {
@@ -356,26 +355,45 @@ export default function AdminDashboard() {
     }
 
     const saveTestimonial = async (testimonial: Testimonial): Promise<Testimonial> => {
-        testimonial.id = uuidv4()
-        const response = await fetch('/api/testimonials', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(testimonial),
-        });
 
-        if (!response.ok) {
-            throw new Error('Erro ao salvar depoimento');
+        let response
+        if (testimonial.id) {
+            response = await fetch('/api/depoiments', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(testimonial),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao salvar depoimento');
+            }
+
+        } else {
+            response = await fetch('/api/depoiments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(testimonial),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao salvar depoimento');
+            }
+
         }
+
 
         setRefresh(!refresh)
 
         return await response.json();
+
     }
 
     const deleteTestimonial = async (id: string): Promise<void> => {
-        const response = await fetch(`/api/testimonials`, {
+        const response = await fetch(`/api/depoiments`, {
             method: 'DELETE',
             body: JSON.stringify(id),
         });
@@ -479,7 +497,7 @@ export default function AdminDashboard() {
                             <p className="text-gray-600">{teacher.role}</p>
                             <ul className="list-disc list-inside mt-2">
                                 {teacher.qualifications.map((exp, index) => (
-                                    <li key={index}>{exp}</li>
+                                    <li key={index}>{exp.text}</li>
                                 ))}
                             </ul>
                         </motion.div>
@@ -563,7 +581,7 @@ export default function AdminDashboard() {
                             <p className="text-gray-600">Icon: {course.icon}</p>
                             <ul className="list-disc list-inside mt-2">
                                 {course.features.map((feature, index) => (
-                                    <li key={index}>{feature}</li>
+                                    <li key={index}>{feature.text}</li>
                                 ))}
                             </ul>
                         </motion.div>

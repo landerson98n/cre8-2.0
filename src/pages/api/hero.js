@@ -1,51 +1,58 @@
-import fs from 'fs';
-import path from 'path';
+import { PrismaClient } from '@prisma/client';
 
-const filePath = path.resolve('data/hero.json');
+const prisma = new PrismaClient();
 
-// Função auxiliar para ler e escrever no JSON
-const readData = () => JSON.parse(fs.readFileSync(filePath));
-const writeData = (data) => fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-
-export default function handler(req, res) {
+export default async function handler(req, res) {
     if (req.method === 'GET') {
-
-        const data = readData();
-        res.status(200).json(data);
-
-    } else if (req.method === 'POST') {
-
-        const newData = req.body;
-        const data = readData();
-        data.push(newData);
-        writeData(data);
-        res.status(201).json({ message: 'Hero adicionado com sucesso!' });
-
-    } else if (req.method === 'PUT') {
-
-        const id = JSON.parse(req.body.id);
-        const data = readData();
-        const index = data.findIndex((prof) => prof.id === id);
-
-        if (index === -1) {
-            res.status(404).json({ message: 'Hero não encontrado!' });
-        } else {
-            data[index] = { ...data[index], ...req.body };
-            writeData(data);
-            res.status(200).json({ message: 'Hero atualizado com sucesso!' });
+        try {
+            // Busca todos os cursos
+            const courses = await prisma.hero.findMany({
+                include: {
+                    features: {
+                        select: {
+                            text: true,
+                        },
+                    },
+                },
+            }); res.status(200).json(courses);
+        } catch (error) {
+            res.status(500).json({ error: 'Erro ao buscar cursos' });
         }
-
+    } else if (req.method === 'POST') {
+        try {
+            const newCourse = req.body;
+            // Cria um novo curso
+            const createdCourse = await prisma.courses.create({
+                data: newCourse,
+            });
+            res.status(201).json({ message: 'Curso adicionado com sucesso!', createdCourse });
+        } catch (error) {
+            res.status(500).json({ error: 'Erro ao adicionar curso' });
+        }
+    } else if (req.method === 'PUT') {
+        try {
+            const { id, ...rest } = req.body;
+            // Atualiza o curso com o ID fornecido
+            const updatedCourse = await prisma.courses.update({
+                where: { id: Number(id) },
+                data: rest,
+            });
+            res.status(200).json({ message: 'Curso atualizado com sucesso!', updatedCourse });
+        } catch (error) {
+            res.status(404).json({ message: 'Curso não encontrado!' });
+        }
     } else if (req.method === 'DELETE') {
-
-        const id = JSON.parse(req.body);
-        const data = readData();
-        const updatedData = data.filter((prof) => prof.id !== id);
-        writeData(updatedData);
-        res.status(200).json({ message: 'Hero removido com sucesso!' });
-
+        try {
+            const id = req.body;
+            // Deleta o curso com o ID fornecido
+            await prisma.courses.delete({
+                where: { id: Number(id) },
+            });
+            res.status(200).json({ message: 'Curso removido com sucesso!' });
+        } catch (error) {
+            res.status(404).json({ message: 'Curso não encontrado!' });
+        }
     } else {
-
         res.status(405).json({ message: 'Método não permitido!' });
-
     }
 }

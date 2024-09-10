@@ -13,7 +13,7 @@ export default function LandingPage() {
   const [animationsData, setAnimationsData] = useState({});
   const [depoiments, setDepoiments] = useState([])
   const [courses, setCourses] = useState([])
-  const [hero, setHero] = useState({title: "", subtitle: ""})
+  const [hero, setHero] = useState({ title: "Conquiste o mundo com fluência em inglês!", subtitle: "Aprenda inglês com quem sabe e desbloqueie um mundo de oportunidades" })
 
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -34,11 +34,6 @@ export default function LandingPage() {
       .then((data) => setDepoiments(data));
   }, []);
 
-  useEffect(() => {
-    fetch('/api/courses')
-      .then((res) => res.json())
-      .then((data) => setCourses(data));
-  }, []);
 
   useEffect(() => {
     fetch('/api/hero')
@@ -123,7 +118,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-             {hero.title}
+              Conquiste o mundo com fluência em inglês!
             </motion.h1>
             <motion.p
               className="text-lg md:text-xl mb-12 max-w-2xl mx-auto"
@@ -131,7 +126,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-             {hero.subtitle}
+              Aprenda inglês com quem sabe e desbloqueie um mundo de oportunidades
             </motion.p>
             <motion.button
               className="bg-red-500 text-white font-bold py-3 px-8 rounded-full text-xl hover:bg-red-600 transition duration-300"
@@ -233,7 +228,7 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 py-20 bg-white">
             <h2 className="text-3xl font-bold text-center mb-12" style={{ fontFamily: "var(--Baloo-Bold)" }}>Nossos cursos</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {courses.map((course, index) => (
+              {courses?.map((course, index) => (
                 <motion.div
                   key={course.title}
                   className="bg-blue-700 p-6 rounded-lg"
@@ -246,7 +241,7 @@ export default function LandingPage() {
                   <h3 className="text-xl font-bold mb-4 text-white" style={{ fontFamily: "var(--Baloo-Bold)" }}>{course.title}</h3>
                   <ul className="list-disc list-inside">
                     {course.features.map((feature, i) => (
-                      <li className="text-white" key={i}>{feature}</li>
+                      <li className="text-white" key={i}>{feature.text}</li>
                     ))}
                   </ul>
                 </motion.div>

@@ -1,55 +1,65 @@
-import fs from 'fs';
-import path from 'path';
+import { PrismaClient } from '@prisma/client';
 
-const filePath = path.resolve('data/depoiments.json');
+const prisma = new PrismaClient();
 
-// Função auxiliar para ler e escrever no JSON
-const readData = () => JSON.parse(fs.readFileSync(filePath));
-const writeData = (data) => fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-
-export default function handler(req, res) {
+export default async function handler(req, res) {
     if (req.method === 'GET') {
-
-        const data = readData();
-        res.status(200).json(data);
-
-    } else if (req.method === 'POST') {
-
-        const newDepoiment = req.body;
-        const data = readData();
-        data.push(newDepoiment);
-        writeData(data);
-        res.status(201).json({ message: 'Depoiment adicionado com sucesso!' });
-
-    } else if (req.method === 'PUT') {
-
-        if (req.method === 'PUT') {
-            const { id, ...rest } = req.body; // Extrai o id e o resto dos campos
-            const data = readData();
-            const index = data.findIndex((data) => data.id === id);
-
-            if (index === -1) {
-                res.status(404).json({ message: 'Objeto não encontrado!' });
-            } else {
-                data[index] = { ...data[index], ...rest }; // Atualiza apenas os campos que vieram no body
-                writeData(data);
-                res.status(200).json({ message: 'Objeto atualizado com sucesso!' });
-            }
-        } else {
-            res.status(405).json({ message: 'Método não permitido' });
+        try {
+            // Busca todos os depoimentos
+            const depoiments = await prisma.depoiment.findMany();
+            res.status(200).json(depoiments);
+        } catch (error) {
+            res.status(500).json({ error: 'Erro ao buscar depoimentos' });
         }
-
+    } else if (req.method === 'POST') {
+        try {
+            const { city, image, name, sub, sub1, text } = req.body;
+            // Cria um novo depoimento
+            const createdDepoiment = await prisma.depoiment.create({
+                data: {
+                    city,
+                    image,
+                    name,
+                    sub,
+                    sub1,
+                    text
+                },
+            });
+            res.status(201).json({ message: 'Depoimento adicionado com sucesso!', createdDepoiment });
+        } catch (error) {
+            res.status(500).json({ error: 'Erro ao adicionar depoimento' });
+        }
+    } else if (req.method === 'PUT') {
+        try {
+            const { city, image, name, sub, sub1, text, id } = req.body;
+            // Atualiza o depoimento com o ID fornecido
+            const updatedDepoiment = await prisma.depoiment.update({
+                where: { id: Number(id) },
+                data: {
+                    city,
+                    image,
+                    name,
+                    sub,
+                    sub1,
+                    text
+                },
+            });
+            res.status(200).json({ message: 'Depoimento atualizado com sucesso!', updatedDepoiment });
+        } catch (error) {
+            res.status(404).json({ message: 'Depoimento não encontrado!' });
+        }
     } else if (req.method === 'DELETE') {
-
-        const id = JSON.parse(req.body);
-        const data = readData();
-        const updatedData = data.filter((prof) => prof.id !== id);
-        writeData(updatedData);
-        res.status(200).json({ message: 'Depoiment removido com sucesso!' });
-
+        try {
+            const id = req.body;
+            // Deleta o depoimento com o ID fornecido
+            await prisma.depoiment.delete({
+                where: { id: Number(id) },
+            });
+            res.status(200).json({ message: 'Depoimento removido com sucesso!' });
+        } catch (error) {
+            res.status(404).json({ message: 'Depoimento não encontrado!' });
+        }
     } else {
-
         res.status(405).json({ message: 'Método não permitido!' });
-
     }
 }

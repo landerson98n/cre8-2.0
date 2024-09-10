@@ -1,0 +1,67 @@
+// schema.prisma
+
+datasource db {
+  provider = "sqlite" // ou outro banco de dados, como PostgreSQL
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Model for "teachers"
+model Teacher {
+  id             Int             @id @default(autoincrement())
+  name           String
+  role           String
+  image          String
+  qualifications Qualification[] // Um relacionamento com a tabela Qualification
+}
+
+// Model for "qualifications" (Relacionamento 1:N com Teacher)
+model Qualification {
+  id        Int     @id @default(autoincrement())
+  text      String
+  teacherId Int
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+}
+
+// Model for "depoiments"
+model Courses {
+  id       Int       @id @default(autoincrement())
+  title    String
+  icon     String
+  features Feature[]
+}
+
+// Model for "features" (Relacionamento 1:N com Depoiment)
+model Feature {
+  id          Int     @id @default(autoincrement())
+  text        String
+  depoimentId Int
+  depoiment   Courses @relation(fields: [depoimentId], references: [id], onDelete: Cascade)
+}
+
+// Model for "courses"
+model Benefit {
+  id            Int    @id @default(autoincrement())
+  title         String
+  description   String
+  animationData String
+}
+
+model Depoiment {
+  id    Int    @id @default(autoincrement())
+  name  String
+  sub   String
+  sub1  String
+  city  String
+  text  String
+  image String
+}
+
+// Model for "about"
+model About {
+  id   Int    @id @default(autoincrement())
+  text String
+}

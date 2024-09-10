@@ -1,54 +1,66 @@
-import fs from 'fs';
-import path from 'path';
+import { PrismaClient } from '@prisma/client';
 
-const filePath = path.resolve('data/professores.json');
 
-// Função auxiliar para ler e escrever no JSON
-const readData = () => JSON.parse(fs.readFileSync(filePath));
-const writeData = (data) => fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+const prisma = new PrismaClient();
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
     if (req.method === 'GET') {
-
-        const data = readData();
-        res.status(200).json(data);
-
-    } else if (req.method === 'POST') {
-
-        const newProfessor = req.body;
-        const data = readData();
-        data.push(newProfessor);
-        writeData(data);
-        res.status(201).json({ message: 'Professor adicionado com sucesso!' });
-
-    } else if (req.method === 'PUT') {
-        if (req.method === 'PUT') {
-            const { id, ...rest } = req.body; // Extrai o id e o resto dos campos
-            const data = readData();
-            const index = data.findIndex((prof) => prof.id === id);
-
-            if (index === -1) {
-                res.status(404).json({ message: 'Professor não encontrado!' });
-            } else {
-                data[index] = { ...data[index], ...rest }; // Atualiza apenas os campos que vieram no body
-                writeData(data);
-                res.status(200).json({ message: 'Professor atualizado com sucesso!' });
-            }
-        } else {
-            res.status(405).json({ message: 'Método não permitido' });
+        try {
+            // Busca todos os professores
+            const professores = await prisma.teacher.findMany({ include: { qualifications: { select: { text: true } } } });
+            res.status(200).json(professores);
+        } catch (error) {
+            res.status(500).json({ error: 'Erro ao buscar professores' });
         }
-
+    } else if (req.method === 'POST') {
+        try {
+            const { image, name, role, qualifications } = req.body;
+            // Cria um novo teacher
+            const createdProfessor = await prisma.teacher.create({
+                data: {
+                    image,
+                    name,
+                    role,
+                    qualifications: {
+                        create: qualifications.map(item => ({ text: item }))
+                    }
+                },
+            });
+            res.status(201).json({ message: 'Professor adicionado com sucesso!', createdProfessor });
+        } catch (error) {
+            res.status(500).json({ error: 'Erro ao adicionar teacher' });
+        }
+    } else if (req.method === 'PUT') {
+        try {
+            const { id, ...rest } = req.body;
+            // Atualiza o teacher com o ID fornecido
+            const updatedProfessor = await prisma.teacher.update({
+                where: { id: Number(id) },
+                data: {
+                    image: rest.image,
+                    name: rest.name,
+                    qualifications: {
+                        create: rest.qualifications.map(item => ({ text: item }))
+                    },
+                    role: rest.role
+                },
+            });
+            res.status(200).json({ message: 'Professor atualizado com sucesso!', updatedProfessor });
+        } catch (error) {
+            res.status(404).json({ message: 'Professor não encontrado!' });
+        }
     } else if (req.method === 'DELETE') {
-
-        const id = JSON.parse(req.body);
-        const data = readData();
-        const updatedData = data.filter((prof) => prof.id !== id);
-        writeData(updatedData);
-        res.status(200).json({ message: 'Professor removido com sucesso!' });
-
+        try {
+            const id = req.body;
+            // Deleta o teacher com o ID fornecido
+            await prisma.teacher.delete({
+                where: { id: Number(id) },
+            });
+            res.status(200).json({ message: 'Professor removido com sucesso!' });
+        } catch (error) {
+            res.status(404).json({ message: 'Professor não encontrado!' });
+        }
     } else {
-
         res.status(405).json({ message: 'Método não permitido!' });
-
     }
 }
