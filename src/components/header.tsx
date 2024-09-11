@@ -16,7 +16,7 @@ export function Header() {
                 <div className="flex items-center space-x-2">
                     <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }} >
                         <Link href="/">
-                            <img className='md:max-h-16 max-h-12 relative' src='https://ik.imagekit.io/6zjortsiwu/tr:w-390/logo_branca.webp' />
+                            <img alt='logo' className='md:max-h-16 max-h-12 relative' src='https://ik.imagekit.io/6zjortsiwu/tr:w-390/logo_branca.webp' />
                         </Link>
                     </motion.div>
                 </div>

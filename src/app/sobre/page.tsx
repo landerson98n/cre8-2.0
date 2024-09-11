@@ -13,7 +13,7 @@ export default function Sobre() {
         <div className="min-h-screen bg-blue-600 text-white font-sans flex justify-center" style={{ fontFamily: "var(--Baloo-Regular)" }}>
             <div className="container px-16 md:text-3xl text-x py-44 text-justify">
                 <div className="flex justify-center pb-36">
-                    <img className='md:max-h-56 max-h-56 relative' src='https://ik.imagekit.io/6zjortsiwu/tr:w-300/logo_branca.webp' />
+                    <img alt="logo" className='md:max-h-56 max-h-56 relative' src='https://ik.imagekit.io/6zjortsiwu/tr:w-300/logo_branca.webp' />
                 </div>
                 <h1>{sobre}</h1>
             </div>

@@ -239,7 +239,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.5, delay: index * 0.2 }}
                   viewport={{ once: true, amount: 0.3 }}
                 >
-                  <img src={course.icon} className="h-32" />
+                  <img src={course.icon} alt={course.title} className="h-32" />
                   <h3 className="text-xl font-bold mb-4 text-white" style={{ fontFamily: "var(--Baloo-Bold)" }}>{course.title}</h3>
                   <ul className="list-disc list-inside">
                     {course.features.map((feature, i) => (
