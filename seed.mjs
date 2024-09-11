@@ -6,38 +6,40 @@ async function main() {
     const professors = [
         {
             "id": 1,
-            "title": "Qualidade",
-            "description": "Ensino de qualidade com nossa equipe de professores certificados internacionalmente.",
-            "animationData": "https://ik.imagekit.io/6zjortsiwu/animations/quality.json?updatedAt=1725800929572"
+            "title": "Turmas Regulares",
+            "icon": "https://ik.imagekit.io/6zjortsiwu/tr:w-300/regular.png",
+            "features": [
+                "Até 5 alunos por turma",
+                "2 aulas por semana",
+                "Turmas dos níveis Iniciante ao Avançado",
+                "Material de Cambridge, moderno e atualizado"
+            ]
         },
         {
             "id": 2,
-            "title": "Soluções",
-            "description": "Aulas individuais ou em turmas, inglês para negócios, e o que mais você precisar!",
-            "animationData": "https://ik.imagekit.io/6zjortsiwu/animations/idea.json?updatedAt=1725800929572"
+            "title": "Aulas VIP",
+            "icon": "https://ik.imagekit.io/6zjortsiwu/tr:w-300/vip.png",
+            "features": [
+                "Prefere aulas exclusivas",
+                "Possui uma necessidades particular com inglês",
+                "Precisa de um estudo intensivo da língua"
+            ]
         },
         {
             "id": 3,
-            "title": "+ 321 alunos",
-            "description": "Mais de 275 alunos fazem parte da nossa história.",
-            "animationData": "https://ik.imagekit.io/6zjortsiwu/animations/cap.json?updatedAt=1725800929572"
-        },
-        {
-            "id": 4,
-            "title": "Mundo",
-            "description": "Alunos em 8 países.",
-            "animationData": "https://ik.imagekit.io/6zjortsiwu/animations/world.json?updatedAt=1725800929572"
-        },
-        {
-            "id": 5,
-            "title": "Brasil\t",
-            "description": "A Cre8 já está em 18 estados do Brasil!",
-            "animationData": "https://ik.imagekit.io/6zjortsiwu/animations/brasil.json?updatedAt=1725800929572"
+            "title": "Preparatório IELTS/TOEFL",
+            "icon": "https://ik.imagekit.io/6zjortsiwu/tr:w-300/preparatorio.png",
+            "features": [
+                "Imigrar para outro país",
+                "Bolsas de estudo",
+                "Vagas de trabalho no exterior",
+                "IELTS, Toefl, Cambridge, Toeic"
+            ]
         }
     ]
 
     for (const professor of professors) {
-        await prisma.benr.create({
+        await prisma.courses.create({
             data: {
                 title: professor.title,
                 icon: professor.icon,

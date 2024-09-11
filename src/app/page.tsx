@@ -36,9 +36,9 @@ export default function LandingPage() {
 
 
   useEffect(() => {
-    fetch('/api/hero')
+    fetch('/api/courses')
       .then((res) => res.json())
-      .then((data) => setHero(data[0]));
+      .then((data) => setCourses(data));
   }, []);
 
   useEffect(() => {
@@ -228,7 +228,7 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 py-20 bg-white">
             <h2 className="text-3xl font-bold text-center mb-12" style={{ fontFamily: "var(--Baloo-Bold)" }}>Nossos cursos</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {courses?.map((course, index) => (
+              {courses.map((course, index) => (
                 <motion.div
                   key={course.title}
                   className="bg-blue-700 p-6 rounded-lg"
