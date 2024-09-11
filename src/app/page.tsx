@@ -80,7 +80,7 @@ export default function LandingPage() {
           >
             <div className="flex flex-col items-center justify-center h-full">
               <nav>
-                <ul className="flex flex-col items-center space-y-6">
+                <ul className="flex flex-col items-center space-y-6 text-white">
                   {['Início', 'Equipe', 'Sobre'].map((item) => (
                     <motion.li key={item} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                       <Link href="#" className="text-2xl hover:underline" onClick={toggleMenu}>{item}</Link>
@@ -88,11 +88,11 @@ export default function LandingPage() {
                   ))}
                 </ul>
               </nav>
-              <div className="flex space-x-4 mt-8">
+              <div className="flex space-x-4 mt-8 text-white">
                 {[Instagram, Phone].map((Icon, index) => (
                   <motion.div key={index} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}>
                     <Link href="#" aria-label={Icon.name}>
-                      <Icon className="w-8 h-8" />
+                      <Icon className="w-8 h-8" color='white' />
                     </Link>
                   </motion.div>
                 ))}
@@ -197,6 +197,8 @@ export default function LandingPage() {
                     <img src={item.image} alt="Lilian Carvalho" className="w-12 h-12 rounded-full mr-4" />
                     <div>
                       <h3 className="font-bold" style={{ fontFamily: "var(--Baloo-Bold)" }}>{item.name}</h3>
+                      <h2  >{item.sub} - {item.sub1}</h2>
+                      <h2  ></h2>
                       <div className="text-yellow-400">★★★★★</div>
                     </div>
                   </div>
